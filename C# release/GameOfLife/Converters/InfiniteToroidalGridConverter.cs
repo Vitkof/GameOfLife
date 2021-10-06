@@ -1,4 +1,5 @@
 ﻿using GameOfLife.Implement;
+using GameOfLife.ViewModels;
 
 namespace GameOfLife.Converters
 {
