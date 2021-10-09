@@ -1,13 +1,10 @@
-﻿using System.Reactive;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Reactive;
 using ReactiveUI;
 using GameOfLife.Implement;
 using GameOfLife.Converters;
 using ReactiveUI.Fody.Helpers;
-using System;
+using System.Threading;
 
 namespace GameOfLife.ViewModels
 {
@@ -19,13 +16,15 @@ namespace GameOfLife.ViewModels
             _rules = rules;
             GridVm = new GridViewModel(InfiniteToroidalGrid.Default.FillVm());
             Tick = ReactiveCommand.Create(TickMethod);
+            Cycle = ReactiveCommand.Create(CycleMethod);
             Reset = ReactiveCommand.Create(ResetMethod);
         }
 
         [Reactive]
         public GridViewModel GridVm { get; set; }
-        public ReactiveCommand<Unit,Unit> Tick { get; }
-        public ReactiveCommand<Unit,Unit> Reset { get; }
+        public ReactiveCommand<Unit, Unit> Tick { get; }
+        public ReactiveCommand<Unit, Unit> Cycle { get; }
+        public ReactiveCommand<Unit, Unit> Reset { get; }
 
         private void ResetMethod()
         {
@@ -36,6 +35,15 @@ namespace GameOfLife.ViewModels
         {
             var newGrid = _rules.Apply(GridVm.ExtractGrid());
             GridVm = new GridViewModel(newGrid.FillVm());
+        }
+
+        private void CycleMethod()
+        {
+            for(int i=0; i<10; i++)
+            {
+                TickMethod();
+                Thread.Sleep(300);
+            }
         }
     }
 }
